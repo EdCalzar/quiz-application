@@ -1,13 +1,34 @@
-import OnClick from "./practice/OnClick"
-import OnChange from "./practice/OnChange"
-import OnSubmit from "./practice/onSubmit"
-import LandingPage from "./components/LandingPage"
-import { Route, Routes } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import LandingPage from './components/LandingPage';
+import InstructorLogin from './components/InstructorLogin';
+import QuizPage from './components/QuizPage';
+import InstructorDashboard from './components/InstructorDashboard';
+import ProtectedRoute from './components/ProtectedRoute';
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<LandingPage/>}/>
-    </Routes>
-  )
+    <BrowserRouter>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/instructor-login" element={<InstructorLogin />} />
+        
+        {/* Student Route */}
+        <Route path="/quiz" element={<QuizPage />} />
+        
+        {/* Protected Instructor Route */}
+        <Route 
+          path="/instructor/dashboard" 
+          element={
+            <ProtectedRoute>
+              <InstructorDashboard />
+            </ProtectedRoute>
+          } 
+        />
+        
+        {/* Fallback - redirect to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
