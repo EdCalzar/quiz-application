@@ -17,12 +17,20 @@ db.version(1).stores({
 
 // Function to check if student already took the quiz
 export const hasStudentTakenQuiz = async (studentId) => {
-    const status = await db.quizStatus
-        .where('studentId')
-        .equals(studentId)
-        .first()
-    
-    return status?.hasCompleted || false
+    try {
+        // Check if student has completed the quiz
+        const status = await db.quizStatus
+            .where('studentId')
+            .equals(studentId)
+            .first()
+        
+        console.log('Quiz status check for', studentId, ':', status)
+        return status?.hasCompleted === true
+    } catch(error) {
+        console.error('Error checking quiz status:', error)
+        return false;
+    }    
+
 }
 
 // Function to register new student
