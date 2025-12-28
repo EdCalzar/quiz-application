@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LandingPage from './components/LandingPage';
 import InstructorLogin from './components/InstructorLogin';
 import QuizPage from './components/QuizPage';
+import QuizSubmitted from './components/QuizSubmitted';
 import InstructorDashboard from './components/InstructorDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -15,6 +16,7 @@ export default function App() {
         
         {/* Student Route */}
         <Route path="/quiz" element={<QuizPage />} />
+        <Route path="/quiz/submitted" element={<QuizSubmitted />} />
         
         {/* Protected Instructor Route */}
         <Route 

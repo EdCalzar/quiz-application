@@ -131,7 +131,7 @@ export default function LandingPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">
-            📝 Quiz Application
+            Quiz Application
           </h1>
           <h2 className="text-xl text-gray-600">JavaScript Fundamentals</h2>
         </div>

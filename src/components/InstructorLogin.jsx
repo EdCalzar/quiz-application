@@ -33,7 +33,6 @@ export default function InstructorLogin() {
       <div className="bg-white rounded-lg shadow-xl p-8 max-w-sm w-full">
         {/* Header */}
         <div className="text-center mb-6">
-          <div className="text-4xl mb-2">🔐</div>
           <h2 className="text-2xl font-bold text-gray-800">
             Instructor Access
           </h2>
