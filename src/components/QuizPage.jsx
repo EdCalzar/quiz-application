@@ -1,24 +1,25 @@
-import { useState, useEffect, useRef } from "react"; // Add useRef
-import { useNavigate } from "react-router-dom";
-import { getCurrentStudent } from "../utils/auth";
-import { saveQuizProgress, submitQuiz } from "../db/database";
-import { useFocusDetection } from "../hooks/useFocusDetection";
-import Timer from "./quiz/Timer";
-import WarningModal from "./quiz/WarningModal";
-import QuestionCard from "./quiz/QuestionCard";
-import quizData from "../data/questions.json";
+// src/components/QuizPage.jsx
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getCurrentStudent } from '../utils/auth';
+import { saveQuizProgress, submitQuiz } from '../db/database';
+import { useFocusDetection } from '../hooks/useFocusDetection';
+import Timer from './quiz/Timer';
+import WarningModal from './quiz/WarningModal';
+import QuestionCard from './quiz/QuestionCard';
+import quizData from '../data/questions.json';
 
 export default function QuizPage() {
   const navigate = useNavigate();
   const student = getCurrentStudent();
-
+  
   // Redirect if no student logged in
   useEffect(() => {
     if (!student) {
-      navigate("/");
+      navigate('/');
     }
   }, [student, navigate]);
-
+  
   // Quiz state
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState(
@@ -26,112 +27,112 @@ export default function QuizPage() {
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfirmSubmit, setShowConfirmSubmit] = useState(false);
-
+  
   // Use a ref to store the latest violations count
   const violationsRef = useRef(0);
-
+  
   // Submit quiz
   const handleSubmitQuiz = async () => {
     setIsSubmitting(true);
-
+    
     try {
       const result = await submitQuiz(
         student.studentId,
         answers,
-        violationsRef.current, // Use ref value
+        violationsRef.current,
         quizData.questions
       );
-
-      console.log("Quiz submitted:", result);
-
+      
+      console.log('Quiz submitted:', result);
+      
       // Navigate to results page
-      navigate("/quiz/submitted");
+      navigate('/quiz/submitted');
+      
     } catch (error) {
-      console.error("Error submitting quiz:", error);
-      alert("Failed to submit quiz. Please try again.");
+      console.error('Error submitting quiz:', error);
+      alert('Failed to submit quiz. Please try again.');
       setIsSubmitting(false);
     }
   };
 
   // Auto-submit function
   const handleAutoSubmit = async () => {
-    console.log("Auto-submitting quiz...");
+    console.log('Auto-submitting quiz...');
     await handleSubmitQuiz();
   };
-
+  
   // Focus detection hook
-  const { violations, showWarning, dismissWarning } = useFocusDetection(
-    3,
-    handleAutoSubmit
-  );
-
-  // Add these temporary values instead:
-  // const violations = 0;
-  // const showWarning = false;
-  // const dismissWarning = () => {};
-
+  const { violations, showWarning, dismissWarning } = 
+    useFocusDetection(3, handleAutoSubmit);
+  
   // Update the ref whenever violations change
   useEffect(() => {
     violationsRef.current = violations;
   }, [violations]);
-
+  
   // Save progress whenever answers or violations change
   useEffect(() => {
     if (student && !isSubmitting) {
       saveQuizProgress(student.studentId, {
         currentQuestion: currentQuestionIndex,
         answers,
-        violations,
+        violations
       });
     }
   }, [answers, violations, currentQuestionIndex, student, isSubmitting]);
-
+  
   // Handle answer selection
   const handleAnswerSelect = (optionIndex) => {
     const newAnswers = [...answers];
     newAnswers[currentQuestionIndex] = optionIndex;
     setAnswers(newAnswers);
   };
-
+  
   // Navigation functions
   const goToNext = () => {
     if (currentQuestionIndex < quizData.questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     }
   };
-
+  
   const goToPrevious = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
     }
   };
-
+  
   const goToQuestion = (index) => {
     setCurrentQuestionIndex(index);
   };
-
+  
   // Calculate answered questions
-  const answeredCount = answers.filter((a) => a !== null).length;
+  const answeredCount = answers.filter(a => a !== null).length;
   const unansweredCount = answers.length - answeredCount;
-
+  
   const currentQuestion = quizData.questions[currentQuestionIndex];
-
+  
   if (!student) return null;
-
+  
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
+        
         {/* Header with Timer */}
         <div className="mb-6">
-          <Timer duration={quizData.duration} onTimeout={handleAutoSubmit} />
+          <Timer 
+            duration={quizData.duration} 
+            onTimeout={handleAutoSubmit}
+          />
         </div>
-
+        
         {/* Violations Counter */}
         <div className="bg-white rounded-lg shadow-md p-4 mb-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Violations</p>
-              <p className="text-2xl font-bold text-red-600">{violations}/3</p>
+              <p className="text-2xl font-bold text-red-600">
+                {violations}/3
+              </p>
             </div>
             <div>
               <p className="text-sm text-gray-600">Progress</p>
@@ -141,7 +142,7 @@ export default function QuizPage() {
             </div>
           </div>
         </div>
-
+        
         {/* Question Card */}
         <QuestionCard
           question={currentQuestion}
@@ -150,7 +151,7 @@ export default function QuizPage() {
           selectedAnswer={answers[currentQuestionIndex]}
           onSelectAnswer={handleAnswerSelect}
         />
-
+        
         {/* Navigation Buttons */}
         <div className="flex gap-4 mt-6">
           <button
@@ -160,7 +161,7 @@ export default function QuizPage() {
           >
             ← Previous
           </button>
-
+          
           {currentQuestionIndex < quizData.questions.length - 1 ? (
             <button
               onClick={goToNext}
@@ -177,7 +178,7 @@ export default function QuizPage() {
             </button>
           )}
         </div>
-
+        
         {/* Question Navigator */}
         <div className="mt-8 bg-white rounded-lg shadow-md p-6">
           <h3 className="font-semibold mb-4">Question Navigator</h3>
@@ -188,17 +189,17 @@ export default function QuizPage() {
                 onClick={() => goToQuestion(index)}
                 className={`aspect-square rounded-lg font-semibold text-sm transition-colors ${
                   index === currentQuestionIndex
-                    ? "bg-blue-600 text-white"
+                    ? 'bg-blue-600 text-white'
                     : answers[index] !== null
-                    ? "bg-green-100 text-green-700 hover:bg-green-200"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
                 {index + 1}
               </button>
             ))}
           </div>
-
+          
           <div className="mt-4 flex gap-4 text-sm">
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 bg-blue-600 rounded"></div>
@@ -214,20 +215,18 @@ export default function QuizPage() {
             </div>
           </div>
         </div>
-
+        
         {/* Unanswered Warning */}
-        {unansweredCount > 0 &&
-          currentQuestionIndex === quizData.questions.length - 1 && (
-            <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <p className="text-yellow-800">
-                ⚠️ You have {unansweredCount} unanswered question
-                {unansweredCount !== 1 ? "s" : ""}. Review your answers before
-                submitting.
-              </p>
-            </div>
-          )}
+        {unansweredCount > 0 && currentQuestionIndex === quizData.questions.length - 1 && (
+          <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <p className="text-yellow-800">
+              ⚠️ You have {unansweredCount} unanswered question{unansweredCount !== 1 ? 's' : ''}. 
+              Review your answers before submitting.
+            </p>
+          </div>
+        )}
       </div>
-
+      
       {/* Warning Modal */}
       {showWarning && (
         <WarningModal
@@ -236,7 +235,7 @@ export default function QuizPage() {
           onDismiss={dismissWarning}
         />
       )}
-
+      
       {/* Confirm Submit Modal */}
       {showConfirmSubmit && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -247,8 +246,7 @@ export default function QuizPage() {
             </p>
             {unansweredCount > 0 && (
               <p className="text-yellow-600 mb-4">
-                ⚠️ You have {unansweredCount} unanswered question
-                {unansweredCount !== 1 ? "s" : ""}.
+                ⚠️ You have {unansweredCount} unanswered question{unansweredCount !== 1 ? 's' : ''}.
               </p>
             )}
             <div className="flex gap-4">
@@ -263,7 +261,7 @@ export default function QuizPage() {
                 disabled={isSubmitting}
                 className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? "Submitting..." : "Yes, Submit"}
+                {isSubmitting ? 'Submitting...' : 'Yes, Submit'}
               </button>
             </div>
           </div>

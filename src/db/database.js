@@ -67,6 +67,7 @@ export const saveQuizProgress = async (studentId, data) => {
       currentQuestion: data.currentQuestion,
       answers: data.answers,
       violations: data.violations,
+      timeRemaining: data.timeRemaining,
       lastUpdated: new Date().toISOString()
     });
     console.log('Progress saved');
