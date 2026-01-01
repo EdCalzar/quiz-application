@@ -1,0 +1,117 @@
+{
+  "quizTitle": "JavaScript Fundamentals Quiz",
+  "duration": 600,
+  "passingScore": 70,
+  "questions": [
+    {
+      "id": 1,
+      "question": "What does 'const' keyword do in JavaScript?",
+      "options": [
+        "Declares a variable that cannot be reassigned",
+        "Declares a constant function",
+        "Creates a global variable",
+        "Declares a mutable variable"
+      ],
+      "correctAnswer": 0
+    },
+    {
+      "id": 2,
+      "question": "Which method adds an element to the end of an array?",
+      "options": [
+        "unshift()",
+        "push()",
+        "pop()",
+        "shift()"
+      ],
+      "correctAnswer": 1
+    },
+    {
+      "id": 3,
+      "question": "What is the result of: typeof null?",
+      "options": [
+        "null",
+        "undefined",
+        "object",
+        "number"
+      ],
+      "correctAnswer": 2
+    },
+    {
+      "id": 4,
+      "question": "Which statement is used to handle exceptions in JavaScript?",
+      "options": [
+        "try-catch",
+        "if-else",
+        "switch-case",
+        "throw-error"
+      ],
+      "correctAnswer": 0
+    },
+    {
+      "id": 5,
+      "question": "What does '===' operator check?",
+      "options": [
+        "Value only",
+        "Type only",
+        "Both value and type",
+        "Reference only"
+      ],
+      "correctAnswer": 2
+    },
+    {
+      "id": 6,
+      "question": "How do you declare an arrow function?",
+      "options": [
+        "function => {}",
+        "() => {}",
+        "=> function()",
+        "arrow function()"
+      ],
+      "correctAnswer": 1
+    },
+    {
+      "id": 7,
+      "question": "What is a Promise in JavaScript?",
+      "options": [
+        "A loop structure",
+        "An object representing eventual completion of an async operation",
+        "A type of variable",
+        "A debugging tool"
+      ],
+      "correctAnswer": 1
+    },
+    {
+      "id": 8,
+      "question": "Which method removes the last element from an array?",
+      "options": [
+        "pop()",
+        "push()",
+        "shift()",
+        "unshift()"
+      ],
+      "correctAnswer": 0
+    },
+    {
+      "id": 9,
+      "question": "What does 'this' keyword refer to in JavaScript?",
+      "options": [
+        "The current file",
+        "The global object",
+        "The context in which it's called",
+        "The parent function"
+      ],
+      "correctAnswer": 2
+    },
+    {
+      "id": 10,
+      "question": "How do you create a comment in JavaScript?",
+      "options": [
+        "<!-- comment -->",
+        "// comment",
+        "# comment",
+        "/* comment"
+      ],
+      "correctAnswer": 1
+    }
+  ]
+}
