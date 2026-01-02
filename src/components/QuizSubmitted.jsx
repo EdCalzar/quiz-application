@@ -1,11 +1,11 @@
 // src/components/QuizSubmitted.jsx
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getCurrentStudent, clearStudentSession } from '../utils/auth';
+import { useAppContext } from '../context/AppContext';
 
 export default function QuizSubmitted() {
   const navigate = useNavigate();
-  const student = getCurrentStudent();
+  const { currentStudent: student, logoutStudent } = useAppContext();
   
   // Redirect if no student logged in
   useEffect(() => {
@@ -16,7 +16,7 @@ export default function QuizSubmitted() {
   
   const handleExit = () => {
     // Clear the student session
-    clearStudentSession();
+    logoutStudent();
     // Go back to landing page
     navigate('/');
   };

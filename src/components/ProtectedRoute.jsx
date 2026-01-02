@@ -1,11 +1,13 @@
 import { Navigate } from 'react-router-dom';
+import { useAppContext } from '../context/AppContext';
+
 
 export default function ProtectedRoute({ children }) {
   // Check if instructor is authenticated
-  const isAuthenticated = localStorage.getItem('instructorAuth') === 'true';
-  
+  const { isInstructorAuth } = useAppContext();
+
   // If not authenticated, redirect to login
-  if (!isAuthenticated) {
+  f (!isInstructorAuth) {
     return <Navigate to="/instructor-login" replace />;
   }
   

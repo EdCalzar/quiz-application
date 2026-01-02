@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAppContext } from '../context/AppContext';
 
 export default function InstructorLogin() {
   const [passcode, setPasscode] = useState("");
@@ -8,6 +9,8 @@ export default function InstructorLogin() {
 
   const navigate = useNavigate();
 
+  const { loginInstructor } = useAppContext();
+  
   // Get passcode from .env file
   const CORRECT_PASSCODE = import.meta.env.VITE_INSTRUCTOR_PASSCODE;
 
@@ -17,8 +20,7 @@ export default function InstructorLogin() {
     // Validate passcode
     if (passcode === CORRECT_PASSCODE) {
       // Store authentication in localStorage
-      localStorage.setItem("instructorAuth", "true");
-      localStorage.setItem("instructorLoginTime", new Date().toISOString());
+       loginInstructor();
 
       // Navigate to instructor dashboard
       navigate("/instructor/dashboard");
