@@ -7,7 +7,7 @@ export default function ProtectedRoute({ children }) {
   const { isInstructorAuth } = useAppContext();
 
   // If not authenticated, redirect to login
-  f (!isInstructorAuth) {
+   if (!isInstructorAuth) {
     return <Navigate to="/instructor-login" replace />;
   }
   
