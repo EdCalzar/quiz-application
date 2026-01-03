@@ -1,7 +1,7 @@
 // src/components/QuizPage.jsx
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getCurrentStudent } from '../utils/auth';
+import { useAppContext } from '../context/AppContext';
 import { saveQuizProgress, submitQuiz } from '../db/database';
 import { useFocusDetection } from '../hooks/useFocusDetection';
 import Timer from './quiz/Timer';
@@ -11,7 +11,7 @@ import quizData from '../data/questions.json';
 
 export default function QuizPage() {
   const navigate = useNavigate();
-  const student = getCurrentStudent();
+  const { currentStudent: student } = useAppContext();
   
   // Redirect if no student logged in
   useEffect(() => {

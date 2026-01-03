@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAppContext } from "../context/AppContext";
 import { registerStudent, hasStudentTakenQuiz } from "../db/database";
 // For resetting or clearing data (only for development phase)
 import { db } from "../db/database";
@@ -16,6 +17,9 @@ export default function LandingPage() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  // Get loginStudent from context
+  const { loginStudent } = useAppContext();
 
   // Handle input changes
   const handleChange = (e) => {
@@ -96,8 +100,8 @@ export default function LandingPage() {
       // Register student in database
       const student = await registerStudent(formData);
 
-      // Store student info in sessionStorage for current session
-      sessionStorage.setItem("currentStudent", JSON.stringify(student));
+      // Use context to log in student (context also persists to sessionStorage)
+      loginStudent(student);
 
       // Navigate to quiz page
       navigate("/quiz");
