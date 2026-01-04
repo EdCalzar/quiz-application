@@ -24,7 +24,7 @@ export default function QuestionCard({
           <button
             key={index}
             onClick={() => onSelectAnswer(index)}
-            className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
+            className={`w-full text-left p-4 rounded-lg border-2 transition-all cursor-pointer ${
               selectedAnswer === index
                 ? 'border-blue-600 bg-blue-50'
                 : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
