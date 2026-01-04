@@ -157,7 +157,7 @@ export default function QuizPage() {
           <button
             onClick={goToPrevious}
             disabled={currentQuestionIndex === 0}
-            className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             ← Previous
           </button>
@@ -165,14 +165,14 @@ export default function QuizPage() {
           {currentQuestionIndex < quizData.questions.length - 1 ? (
             <button
               onClick={goToNext}
-              className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+              className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors cursor-pointer"
             >
               Next →
             </button>
           ) : (
             <button
               onClick={() => setShowConfirmSubmit(true)}
-              className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+              className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors cursor-pointer"
             >
               Submit Quiz
             </button>
@@ -187,7 +187,7 @@ export default function QuizPage() {
               <button
                 key={index}
                 onClick={() => goToQuestion(index)}
-                className={`aspect-square rounded-lg font-semibold text-sm transition-colors ${
+                className={`aspect-square rounded-lg font-semibold text-sm transition-colors cursor-pointer ${
                   index === currentQuestionIndex
                     ? 'bg-blue-600 text-white'
                     : answers[index] !== null
@@ -238,7 +238,7 @@ export default function QuizPage() {
       
       {/* Confirm Submit Modal */}
       {showConfirmSubmit && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-2xl p-6 max-w-md w-full mx-4">
             <h2 className="text-2xl font-bold mb-4">Submit Quiz?</h2>
             <p className="text-gray-600 mb-2">
@@ -246,20 +246,20 @@ export default function QuizPage() {
             </p>
             {unansweredCount > 0 && (
               <p className="text-yellow-600 mb-4">
-                ⚠️ You have {unansweredCount} unanswered question{unansweredCount !== 1 ? 's' : ''}.
+                You have {unansweredCount} unanswered question{unansweredCount !== 1 ? 's' : ''}.
               </p>
             )}
             <div className="flex gap-4">
               <button
                 onClick={() => setShowConfirmSubmit(false)}
-                className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors"
+                className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSubmitQuiz}
                 disabled={isSubmitting}
-                className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed cursor-pointer"
               >
                 {isSubmitting ? 'Submitting...' : 'Yes, Submit'}
               </button>

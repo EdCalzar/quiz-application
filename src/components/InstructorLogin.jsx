@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from '../context/AppContext';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function InstructorLogin() {
   const [passcode, setPasscode] = useState("");
@@ -74,9 +75,9 @@ export default function InstructorLogin() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 cursor-pointer"
               >
-                {showPassword ? "👁️" : "👁️‍🗨️"}
+                {showPassword ? <Eye size={18}/> : <EyeOff size={18}/>}
               </button>
             </div>
           </div>
@@ -84,7 +85,7 @@ export default function InstructorLogin() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+            className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors cursor-pointer"
           >
             Access Dashboard
           </button>
@@ -94,7 +95,7 @@ export default function InstructorLogin() {
         <div className="mt-6 text-center">
           <button
             onClick={() => navigate("/")}
-            className="text-gray-600 hover:text-gray-800 text-sm"
+            className="text-gray-600 hover:text-gray-800 text-sm cursor-pointer"
           >
             ← Back to Student Login
           </button>

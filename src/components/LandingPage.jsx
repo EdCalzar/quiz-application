@@ -227,7 +227,7 @@ export default function LandingPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed cursor-pointer"
           >
             {loading ? "Checking..." : "START QUIZ"}
           </button>
@@ -237,7 +237,7 @@ export default function LandingPage() {
         <div className="mt-6 text-center">
           <button
             onClick={() => navigate("/instructor-login")}
-            className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+            className="text-blue-600 hover:text-blue-800 text-sm font-medium cursor-pointer"
           >
             I am an Instructor →
           </button>
