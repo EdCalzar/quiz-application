@@ -1,5 +1,187 @@
+// src/components/InstructorDashboard.jsx
+import { useState, useEffect } from 'react';
+import { getAllSubmissions, releaseAllScores, areScoresReleased } from '../db/database';
+import InstructorHeader from './instructor/InstructorHeader';
+import ResultsTable from './instructor/ResultsTable';
+
 export default function InstructorDashboard() {
+  const [submissions, setSubmissions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [releasing, setReleasing] = useState(false);
+  const [scoresReleased, setScoresReleased] = useState(false);
+  const [sortBy, setSortBy] = useState({ column: 'timestamp', direction: 'desc' });
+  
+  // Fetch submissions on mount
+  useEffect(() => {
+    fetchSubmissions();
+    checkReleaseStatus();
+  }, []);
+  
+  const fetchSubmissions = async () => {
+    setLoading(true);
+    try {
+      const data = await getAllSubmissions();
+      setSubmissions(data);
+    } catch (error) {
+      console.error('Error fetching submissions:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const checkReleaseStatus = async () => {
+    try {
+      const released = await areScoresReleased();
+      setScoresReleased(released);
+    } catch (error) {
+      console.error('Error checking release status:', error);
+    }
+  };
+  
+  const handleReleaseScores = async () => {
+    if (!window.confirm('Are you sure you want to release all scores? Students will be able to see their results.')) {
+      return;
+    }
+    
+    setReleasing(true);
+    try {
+      await releaseAllScores();
+      setScoresReleased(true);
+      
+      // Refresh submissions to show updated status
+      await fetchSubmissions();
+      
+      alert('✅ All scores have been released!');
+    } catch (error) {
+      console.error('Error releasing scores:', error);
+      alert('❌ Failed to release scores. Please try again.');
+    } finally {
+      setReleasing(false);
+    }
+  };
+  
+  const handleSort = (column) => {
+    const direction = 
+      sortBy.column === column && sortBy.direction === 'asc' 
+        ? 'desc' 
+        : 'asc';
+    
+    setSortBy({ column, direction });
+    
+    const sorted = [...submissions].sort((a, b) => {
+      let aVal = a[column];
+      let bVal = b[column];
+      
+      // Handle different data types
+      if (column === 'timestamp') {
+        aVal = new Date(aVal).getTime();
+        bVal = new Date(bVal).getTime();
+      } else if (typeof aVal === 'string') {
+        aVal = aVal.toLowerCase();
+        bVal = bVal.toLowerCase();
+      }
+      
+      if (direction === 'asc') {
+        return aVal > bVal ? 1 : -1;
+      } else {
+        return aVal < bVal ? 1 : -1;
+      }
+    });
+    
+    setSubmissions(sorted);
+  };
+  
+  // Calculate statistics
+  const totalSubmissions = submissions.length;
+  const averageScore = totalSubmissions > 0
+    ? Math.round(submissions.reduce((sum, sub) => sum + sub.score, 0) / totalSubmissions)
+    : 0;
+  const passedCount = submissions.filter(sub => sub.score >= 70).length;
+  const passRate = totalSubmissions > 0
+    ? Math.round((passedCount / totalSubmissions) * 100)
+    : 0;
+  
+  if (loading) {
     return (
-        <h1>Instructor Dashboard</h1>
-    )
+      <div className="min-h-screen bg-gray-50">
+        <InstructorHeader />
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <div className="text-6xl mb-4 animate-pulse">⏳</div>
+              <p className="text-xl text-gray-600">Loading submissions...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <InstructorHeader />
+      
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="text-sm font-medium text-gray-500 mb-1">Total Submissions</div>
+            <div className="text-3xl font-bold text-blue-600">{totalSubmissions}</div>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="text-sm font-medium text-gray-500 mb-1">Average Score</div>
+            <div className="text-3xl font-bold text-purple-600">{averageScore}%</div>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="text-sm font-medium text-gray-500 mb-1">Students Passed</div>
+            <div className="text-3xl font-bold text-green-600">{passedCount}/{totalSubmissions}</div>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="text-sm font-medium text-gray-500 mb-1">Pass Rate</div>
+            <div className="text-3xl font-bold text-yellow-600">{passRate}%</div>
+          </div>
+        </div>
+        
+        {/* Release Scores Button */}
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-semibold text-gray-800">Student Results</h2>
+            <p className="text-sm text-gray-600">
+              {scoresReleased 
+                ? 'Scores have been released to students' 
+                : 'Scores are pending release'}
+            </p>
+          </div>
+          
+          {!scoresReleased && totalSubmissions > 0 && (
+            <button
+              onClick={handleReleaseScores}
+              disabled={releasing}
+              className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+            >
+              {releasing ? 'Releasing...' : '🎉 Release All Scores'}
+            </button>
+          )}
+          
+          {scoresReleased && (
+            <div className="bg-green-50 border border-green-200 px-4 py-2 rounded-lg">
+              <span className="text-green-700 font-semibold">✅ Scores Released</span>
+            </div>
+          )}
+        </div>
+        
+        {/* Results Table */}
+        <ResultsTable 
+          submissions={submissions}
+          sortBy={sortBy}
+          onSort={handleSort}
+        />
+        
+      </div>
+    </div>
+  );
 }
