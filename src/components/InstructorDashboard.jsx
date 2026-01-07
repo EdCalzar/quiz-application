@@ -51,10 +51,10 @@ export default function InstructorDashboard() {
       // Refresh submissions to show updated status
       await fetchSubmissions();
       
-      alert('✅ All scores have been released!');
+      alert('All scores have been released!');
     } catch (error) {
       console.error('Error releasing scores:', error);
-      alert('❌ Failed to release scores. Please try again.');
+      alert('Failed to release scores. Please try again.');
     } finally {
       setReleasing(false);
     }
@@ -108,7 +108,6 @@ export default function InstructorDashboard() {
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
-              <div className="text-6xl mb-4 animate-pulse">⏳</div>
               <p className="text-xl text-gray-600">Loading submissions...</p>
             </div>
           </div>
@@ -127,22 +126,22 @@ export default function InstructorDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="text-sm font-medium text-gray-500 mb-1">Total Submissions</div>
-            <div className="text-3xl font-bold text-blue-600">{totalSubmissions}</div>
+            <div className="text-3xl font-bold">{totalSubmissions}</div>
           </div>
           
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="text-sm font-medium text-gray-500 mb-1">Average Score</div>
-            <div className="text-3xl font-bold text-purple-600">{averageScore}%</div>
+            <div className="text-3xl font-bold">{averageScore}%</div>
           </div>
           
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="text-sm font-medium text-gray-500 mb-1">Students Passed</div>
-            <div className="text-3xl font-bold text-green-600">{passedCount}/{totalSubmissions}</div>
+            <div className="text-3xl font-bold">{passedCount}/{totalSubmissions}</div>
           </div>
           
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="text-sm font-medium text-gray-500 mb-1">Pass Rate</div>
-            <div className="text-3xl font-bold text-yellow-600">{passRate}%</div>
+            <div className="text-3xl font-bold">{passRate}%</div>
           </div>
         </div>
         
@@ -161,15 +160,15 @@ export default function InstructorDashboard() {
             <button
               onClick={handleReleaseScores}
               disabled={releasing}
-              className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed cursor-pointer"
             >
-              {releasing ? 'Releasing...' : '🎉 Release All Scores'}
+              {releasing ? 'Releasing...' : 'Release All Scores'}
             </button>
           )}
           
           {scoresReleased && (
             <div className="bg-green-50 border border-green-200 px-4 py-2 rounded-lg">
-              <span className="text-green-700 font-semibold">✅ Scores Released</span>
+              <span className="text-green-700 font-semibold">Scores Released</span>
             </div>
           )}
         </div>

@@ -84,35 +84,47 @@ export default function LandingPage() {
 
     setLoading(true);
 
-    try {
-      // Check if student already took quiz from the database
-      const hasTaken = await hasStudentTakenQuiz(formData.studentId);
-
-      if (hasTaken) {
-        setErrors({
-          general:
-            "You have already taken this quiz. Please wait for the instructor to release your score.",
-        });
-        setLoading(false);
-        return;
+      try {
+    // Check if student already took quiz from the database
+    const hasTaken = await hasStudentTakenQuiz(formData.studentId);
+    
+    if (hasTaken) {
+      // FIXED: Get existing student instead of re-registering
+      const existingStudent = await db.students
+        .where('studentId')
+        .equals(formData.studentId)
+        .first();
+      
+      if (existingStudent) {
+        // Use existing student data
+        loginStudent(existingStudent);
+      } else {
+        // Fallback: register if somehow not found (shouldn't happen)
+        const student = await registerStudent(formData);
+        loginStudent(student);
       }
-
-      // Register student in database
-      const student = await registerStudent(formData);
-
-      // Use context to log in student (context also persists to sessionStorage)
-      loginStudent(student);
-
-      // Navigate to quiz page
-      navigate("/quiz");
-    } catch (error) {
-      console.error("Error:", error);
-      setErrors({
-        general: "An error occurred. Please try again.",
-      });
-    } finally {
-      setLoading(false);
+      
+      navigate('/quiz/submitted');
+      return;
     }
+    
+    // Register student in database (first time only)
+    const student = await registerStudent(formData);
+    
+    // Store student info in sessionStorage for current session
+    loginStudent(student);
+    
+    // Navigate to quiz page
+    navigate('/quiz');
+    
+  } catch (error) {
+    console.error('Error:', error);
+    setErrors({
+      general: 'An error occurred. Please try again.',
+    });
+  } finally {
+    setLoading(false);
+  }
   };
 
   // Reset or clear data button (only for development phase)

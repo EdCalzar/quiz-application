@@ -20,7 +20,7 @@ export default function InstructorHeader() {
         
         <button
           onClick={handleLogout}
-          className="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition-colors"
+          className="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition-colors cursor-pointer"
         >
           Logout
         </button>

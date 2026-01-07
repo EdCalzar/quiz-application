@@ -16,7 +16,6 @@ export default function ResultsTable({ submissions, sortBy, onSort }) {
   if (submissions.length === 0) {
     return (
       <div className="bg-white rounded-lg shadow-md p-12 text-center">
-        <div className="text-6xl mb-4">📝</div>
         <h3 className="text-xl font-semibold text-gray-800 mb-2">No Submissions Yet</h3>
         <p className="text-gray-600">Student quiz submissions will appear here.</p>
       </div>
