@@ -127,18 +127,18 @@ export default function LandingPage() {
   };
 
   // Reset or clear data button (only for development phase)
-  const handleResetDatabase = async () => {
-    if (window.confirm("Are you sure? This will delete ALL data!")) {
-      // Clear tables BEFORE closing the connection
-      await db.students.clear();
-      await db.submissions.clear();
-      await db.quizStatus.clear();
-      await db.quizProgress.clear();
+  // const handleResetDatabase = async () => {
+  //   if (window.confirm("Are you sure? This will delete ALL data!")) {
+  //     // Clear tables BEFORE closing the connection
+  //     await db.students.clear();
+  //     await db.submissions.clear();
+  //     await db.quizStatus.clear();
+  //     await db.quizProgress.clear();
 
-      console.log("Database cleared successfully");
-      alert("Database cleared successfully!");
-    }
-  };
+  //     console.log("Database cleared successfully");
+  //     alert("Database cleared successfully!");
+  //   }
+  // };
 
   return (
     <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
@@ -255,14 +255,14 @@ export default function LandingPage() {
         </div>
 
         {/* Reset button (only for development phase) */}
-        <div className="mt-4 text-center">
+        {/* <div className="mt-4 text-center">
           <button
             onClick={handleResetDatabase}
             className="text-red-500 hover:text-red-700 text-xs font-medium"
           >
             Reset Database (Dev Only)
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );
