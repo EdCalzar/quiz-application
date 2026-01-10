@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import LandingPage from './components/LandingPage';
-import InstructorLogin from './components/InstructorLogin';
-import QuizPage from './components/QuizPage';
-import QuizSubmitted from './components/QuizSubmitted';
-import InstructorDashboard from './components/InstructorDashboard';
-import ProtectedRoute from './components/ProtectedRoute';
+import LandingPage from './components/LandingPage.jsx';
+import InstructorLogin from './components/InstructorLogin.jsx';
+import QuizPage from './components/QuizPage.jsx';
+import QuizSubmitted from './components/QuizSubmitted.jsx';
+import InstructorDashboard from './components/InstructorDashboard.jsx';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
 
 export default function App() {
   return (

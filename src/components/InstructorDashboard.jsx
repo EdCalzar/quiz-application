@@ -1,8 +1,8 @@
 // src/components/InstructorDashboard.jsx
 import { useState, useEffect } from 'react';
-import { getAllSubmissions, releaseAllScores, areScoresReleased } from '../db/database';
-import InstructorHeader from './instructor/InstructorHeader';
-import ResultsTable from './instructor/ResultsTable';
+import { getAllSubmissions, releaseAllScores, areScoresReleased } from '../db/database.js';
+import InstructorHeader from './instructor/InstructorHeader.jsx';
+import ResultsTable from './instructor/ResultsTable.jsx';
 
 export default function InstructorDashboard() {
   const [submissions, setSubmissions] = useState([]);
@@ -10,6 +10,7 @@ export default function InstructorDashboard() {
   const [releasing, setReleasing] = useState(false);
   const [scoresReleased, setScoresReleased] = useState(false);
   const [sortBy, setSortBy] = useState({ column: 'timestamp', direction: 'desc' });
+   const [showReleaseModal, setShowReleaseModal] = useState(false);
   
   // Fetch submissions on mount
   useEffect(() => {
@@ -39,10 +40,6 @@ export default function InstructorDashboard() {
   };
   
   const handleReleaseScores = async () => {
-    if (!window.confirm('Are you sure you want to release all scores? Students will be able to see their results.')) {
-      return;
-    }
-    
     setReleasing(true);
     try {
       await releaseAllScores();
@@ -50,8 +47,9 @@ export default function InstructorDashboard() {
       
       // Refresh submissions to show updated status
       await fetchSubmissions();
-      
-      alert('All scores have been released!');
+
+      // Close modal
+      setShowReleaseModal(false);
     } catch (error) {
       console.error('Error releasing scores:', error);
       alert('Failed to release scores. Please try again.');
@@ -158,11 +156,11 @@ export default function InstructorDashboard() {
           
           {!scoresReleased && totalSubmissions > 0 && (
             <button
-              onClick={handleReleaseScores}
+              onClick={() => setShowReleaseModal(true)}
               disabled={releasing}
               className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed cursor-pointer"
             >
-              {releasing ? 'Releasing...' : 'Release All Scores'}
+              Release All Scores
             </button>
           )}
           
@@ -181,6 +179,54 @@ export default function InstructorDashboard() {
         />
         
       </div>
+
+      {showReleaseModal && (
+        <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-2xl max-w-md w-full p-6">
+            
+            {/* Icon */}
+            <div className="text-center mb-4">
+              <h2 className="text-2xl font-bold text-gray-800">Release Scores?</h2>
+            </div>
+            
+            {/* Message */}
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+              <p className="text-gray-700 text-sm mb-2">
+                Are you sure you want to release all scores?
+              </p>
+              <p className="text-gray-600 text-sm">
+                Students will be able to see their results immediately. This action affects <strong>{totalSubmissions}</strong> submission{totalSubmissions !== 1 ? 's' : ''}.
+              </p>
+            </div>
+            
+            {/* Warning */}
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-6">
+              <p className="text-red-700 text-xs">
+                <strong>Note:</strong> Once released, students can view their scores. Make sure all grading is finalized.
+              </p>
+            </div>
+            
+            {/* Buttons */}
+            <div className="flex gap-4">
+              <button
+                onClick={() => setShowReleaseModal(false)}
+                disabled={releasing}
+                className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors disabled:opacity-50 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleReleaseScores}
+                disabled={releasing}
+                className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed cursor-pointer"
+              >
+                {releasing ? 'Releasing...' : 'Yes, Release Scores'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}    
+
     </div>
   );
 }

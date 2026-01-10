@@ -1,4 +1,4 @@
-import { formatTimestamp, getScoreColor, getViolationsColor } from '../../utils/formatters';
+import { formatTimestamp, getScoreColor, getViolationsColor } from '../../utils/formatters.js';
 
 export default function ResultsTable({ submissions, sortBy, onSort }) {
   

@@ -1,8 +1,8 @@
 // src/components/QuizSubmitted.jsx
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppContext } from '../context/AppContext';
-import { db } from '../db/database'; // NEW
+import { useAppContext } from '../context/AppContext.jsx';
+import { db } from '../db/database.js'; 
 
 export default function QuizSubmitted() {
   const navigate = useNavigate();
@@ -79,7 +79,7 @@ export default function QuizSubmitted() {
               
               {submission.score >= 70 ? (
                 <div className="mt-4 bg-green-100 border border-green-300 rounded-lg p-3">
-                  <p className="text-green-800 font-semibold">🎉 Congratulations! You passed!</p>
+                  <p className="text-green-800 font-semibold">Congratulations! You passed!</p>
                 </div>
               ) : (
                 <div className="mt-4 bg-yellow-100 border border-yellow-300 rounded-lg p-3">

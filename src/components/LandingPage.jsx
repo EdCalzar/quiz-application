@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppContext } from "../context/AppContext";
-import { registerStudent, hasStudentTakenQuiz } from "../db/database";
-// For resetting or clearing data (only for development phase)
-import { db } from "../db/database";
+import { useAppContext } from "../context/AppContext.jsx";
+import { registerStudent, hasStudentTakenQuiz } from "../db/database.js";
+import { db } from "../db/database.js";
 
 export default function LandingPage() {
   const [formData, setFormData] = useState({
@@ -129,15 +128,15 @@ export default function LandingPage() {
 
   // Reset or clear data button (only for development phase)
   const handleResetDatabase = async () => {
-    if (window.confirm("⚠️ Are you sure? This will delete ALL data!")) {
+    if (window.confirm("Are you sure? This will delete ALL data!")) {
       // Clear tables BEFORE closing the connection
       await db.students.clear();
       await db.submissions.clear();
       await db.quizStatus.clear();
       await db.quizProgress.clear();
 
-      console.log("✅ Database cleared successfully");
-      alert("✅ Database cleared successfully!");
+      console.log("Database cleared successfully");
+      alert("Database cleared successfully!");
     }
   };
 
@@ -158,8 +157,8 @@ export default function LandingPage() {
             Quiz Instructions:
           </h3>
           <ul className="text-sm text-gray-700 space-y-1">
-            <li>• 20 multiple-choice questions</li>
-            <li>• 30 minutes duration</li>
+            <li>• 10 multiple-choice questions</li>
+            <li>• 10 minutes duration</li>
             <li>• No retakes allowed</li>
             <li>• Tab switching will be detected</li>
             <li>• Auto-submit after 3 violations</li>
@@ -188,7 +187,7 @@ export default function LandingPage() {
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                 errors.studentId ? "border-red-500" : "border-gray-300"
               }`}
-              placeholder="e.g., 2023-12345"
+              placeholder="e.g., 20260000"
             />
             {errors.studentId && (
               <p className="text-red-500 text-sm mt-1">{errors.studentId}</p>
