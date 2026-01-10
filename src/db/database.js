@@ -126,3 +126,61 @@ export const submitQuiz = async (studentId, answers, violations, questions) => {
   }
 };
 
+    export const releaseAllScores = async () => {
+  try {
+    // Update all submissions to released: true
+    await db.submissions.toCollection().modify({ released: true });
+    console.log('✅ All scores released');
+    return true;
+  } catch (error) {
+    console.error('Error releasing scores:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get all submissions with student details
+ */
+export const getAllSubmissions = async () => {
+  try {
+    const submissions = await db.submissions.toArray();
+    
+    // Get student details for each submission
+    const submissionsWithDetails = await Promise.all(
+      submissions.map(async (submission) => {
+        const student = await db.students
+          .where('studentId')
+          .equals(submission.studentId)
+          .first();
+        
+        return {
+          ...submission,
+          studentName: student?.name || 'Unknown',
+          studentEmail: student?.email || 'N/A'
+        };
+      })
+    );
+    
+    return submissionsWithDetails;
+  } catch (error) {
+    console.error('Error getting submissions:', error);
+    return [];
+  }
+};
+
+/**
+ * Check if scores are released
+ */
+export const areScoresReleased = async () => {
+  try {
+    const submissions = await db.submissions.toArray();
+    if (submissions.length === 0) return false;
+    
+    // Check if all submissions are released
+    return submissions.every(sub => sub.released === true);
+  } catch (error) {
+    console.error('Error checking release status:', error);
+    return false;
+  }
+};
+

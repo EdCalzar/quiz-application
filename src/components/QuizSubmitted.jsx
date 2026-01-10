@@ -1,11 +1,15 @@
 // src/components/QuizSubmitted.jsx
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppContext } from '../context/AppContext';
+import { useAppContext } from '../context/AppContext.jsx';
+import { db } from '../db/database.js'; 
 
 export default function QuizSubmitted() {
   const navigate = useNavigate();
   const { currentStudent: student, logoutStudent } = useAppContext();
+
+  const [submission, setSubmission] = useState(null);
+  const [loading, setLoading] = useState(true);
   
   // Redirect if no student logged in
   useEffect(() => {
@@ -13,6 +17,27 @@ export default function QuizSubmitted() {
       navigate('/');
     }
   }, [student, navigate]);
+
+  useEffect(() => {
+    const fetchSubmission = async () => {
+      if (!student) return;
+      
+      try {
+        const sub = await db.submissions
+          .where('studentId')
+          .equals(student.studentId)
+          .first();
+        
+        setSubmission(sub);
+      } catch (error) {
+        console.error('Error fetching submission:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchSubmission();
+  }, [student]);
   
   const handleExit = () => {
     // Clear the student session
@@ -20,11 +45,21 @@ export default function QuizSubmitted() {
     // Go back to landing page
     navigate('/');
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
   
   if (!student) return null;
   
   return (
-    <div className="min-h-screen bg-linear-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-linear-to-br bg-gray-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center">
 
         {/* Success Title */}
@@ -32,17 +67,41 @@ export default function QuizSubmitted() {
           Quiz Submitted!
         </h1>
         
-        {/* Main Message */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-          <p className="text-gray-700 font-medium">
-            Your answers have been submitted successfully.
-          </p>
-          <p className="text-gray-600 mt-2 text-sm">
-            Please wait for the instructor to release the results.
-          </p>
-        </div>
+        {/* UPDATED: Conditional display based on released status */}
+        {submission?.released ? (
+          <>
+            {/* SHOW SCORE */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+              <p className="text-sm text-gray-600 mb-2">Your Score</p>
+              <p className="text-2xl font-bold text-gray-600">
+                {submission.correctAnswers}/{submission.totalQuestions} correct answers
+              </p>
+              
+              {submission.score >= 70 ? (
+                <div className="mt-4 bg-green-100 border border-green-300 rounded-lg p-3">
+                  <p className="text-green-800 font-semibold">Congratulations! You passed!</p>
+                </div>
+              ) : (
+                <div className="mt-4 bg-yellow-100 border border-yellow-300 rounded-lg p-3">
+                  <p className="text-yellow-800 font-semibold">Keep studying and try again next time!</p>
+                </div>
+              )}
+            </div>
+          </>
+        ) : (
+          <>
+            {/* PENDING MESSAGE */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+              <p className="text-gray-700">
+                Your answers have been submitted successfully.
+              </p>
+              <p className="text-gray-600 mt-2 text-sm">
+                Please wait for the instructor to release the results.
+              </p>
+            </div>
+          </>
+        )}
         
-        {/* Student Info */}
         <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
           <p className="text-sm text-gray-600 mb-2">
             <strong>Student Name:</strong> {student.name}
@@ -55,14 +114,6 @@ export default function QuizSubmitted() {
           </p>
         </div>
         
-        {/* Instructions */}
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-6">
-          <p className="text-xs text-yellow-800">
-            You will be notified via email once your results are released.
-          </p>
-        </div>
-        
-        {/* Exit Button */}
         <button
           onClick={handleExit}
           className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors cursor-pointer"

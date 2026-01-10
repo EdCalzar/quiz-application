@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import { useAppContext } from '../context/AppContext';
+import { useAppContext } from '../context/AppContext.jsx';
 
 
 export default function ProtectedRoute({ children }) {

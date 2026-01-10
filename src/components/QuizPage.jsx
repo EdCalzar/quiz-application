@@ -2,11 +2,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
-import { saveQuizProgress, submitQuiz } from '../db/database';
-import { useFocusDetection } from '../hooks/useFocusDetection';
-import Timer from './quiz/Timer';
-import WarningModal from './quiz/WarningModal';
-import QuestionCard from './quiz/QuestionCard';
+import { saveQuizProgress, submitQuiz, db } from '../db/database.js';
+import { useFocusDetection } from '../hooks/useFocusDetection.js';
+import Timer from './quiz/Timer.jsx';
+import WarningModal from './quiz/WarningModal.jsx';
+import QuestionCard from './quiz/QuestionCard.jsx';
 import quizData from '../data/questions.json';
 
 export default function QuizPage() {
@@ -31,11 +31,32 @@ export default function QuizPage() {
   // Use a ref to store the latest violations count
   const violationsRef = useRef(0);
   
+  // NEW: Add this ref to prevent duplicate auto-submissions
+  const hasAutoSubmitted = useRef(false);
+  
   // Submit quiz
   const handleSubmitQuiz = async () => {
+    // NEW: Guard against duplicate submissions
+    if (isSubmitting) {
+      console.log('Already submitting...');
+      return;
+    }
+    
     setIsSubmitting(true);
     
     try {
+      // NEW: Check if already submitted in database
+      const existingSubmission = await db.submissions
+        .where('studentId')
+        .equals(student.studentId)
+        .first();
+      
+      if (existingSubmission) {
+        console.log('Submission already exists, navigating...');
+        navigate('/quiz/submitted');
+        return;
+      }
+      
       const result = await submitQuiz(
         student.studentId,
         answers,
@@ -55,8 +76,15 @@ export default function QuizPage() {
     }
   };
 
-  // Auto-submit function
+  // NEW: Modified auto-submit function with guard
   const handleAutoSubmit = async () => {
+    // Prevent duplicate submissions
+    if (hasAutoSubmitted.current || isSubmitting) {
+      console.log('Already submitting, skipping...');
+      return;
+    }
+    
+    hasAutoSubmitted.current = true;
     console.log('Auto-submitting quiz...');
     await handleSubmitQuiz();
   };
@@ -220,7 +248,7 @@ export default function QuizPage() {
         {unansweredCount > 0 && currentQuestionIndex === quizData.questions.length - 1 && (
           <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
             <p className="text-yellow-800">
-              ⚠️ You have {unansweredCount} unanswered question{unansweredCount !== 1 ? 's' : ''}. 
+              You have {unansweredCount} unanswered question{unansweredCount !== 1 ? 's' : ''}. 
               Review your answers before submitting.
             </p>
           </div>
